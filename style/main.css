@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Viga&family=Dosis&family=Inconsolata&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Viga&family=Dosis&family=Oxygen+Mono&display=swap");
 
 h1,
 h2,
@@ -29,12 +29,12 @@ hr {
 
 .remark-code,
 .remark-inline-code {
-    font-family: Inconsolata, monospace;
+    font-family: "Oxygen Mono", monospace;
     font-size: 26px;
 }
 
 .remark-slide-number {
-    font-family: Inconsolata, serif;
+    font-family: "Oxygen Mono", serif;
     font-size: 20px;
     top: 12px;
 }
@@ -78,7 +78,6 @@ hr {
     margin: 0.5em 0;
     padding: 0.5em;
     padding-left: 1em;
-    border-left: 0.5em solid darkslategray;
     display: block;
     background: rgba(100, 100, 100, 0.1);
     clear: both;
@@ -187,7 +186,7 @@ a:visited,
 a:focus {
     color: steelblue;
     text-decoration: none;
-    font-family: Inconsolata, monospace;
+    font-family: "Oxygen Mono", monospace;
 }
 
 li > p {
