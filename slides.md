@@ -46,19 +46,28 @@ PyLadies Munich @ Alasco
 
 --
 
-- Tim Berners-Lee (inventor of the World Wide Web)
+- We knew some radical changes were needed
+
+--
+
+- We couldn't just get rid of the mess and change everything overnight
+
+--
+
+.right[.green[.emph[Cool URIs don't change]]]
 
 ---
 
 class: middle center
 
-When you change a URI .ref[1] on your server, you can never completely tell who will have links to the old URI [...] They might have bookmarked your page. They might have scrawled the URI in the margin of a letter to a friend.
+When you change a URI on your server, you can never completely tell who will have links to the old URI [...] They might have bookmarked your page. They might have scrawled the URI in the margin of a letter to a friend.
 
-.blue[Tim Berners-Lee &mdash; Cool URIs don't change, 1998]
+.blue[Tim Berners-Lee &mdash; Cool URIs don't change, 1998].ref[1]
 
-.bottom[
-.footnote[.ref[1] The difference between URI and URL is out of the scope of this talk]
-]
+.bottom[.left[
+.footnote[.ref[1] https://www.w3.org/Provider/Style/URI.html.en]
+.footnote[The difference between URI and URL is out of the scope of this talk]
+]]
 
 ---
 
@@ -67,6 +76,10 @@ class: middle center
 ## So what should I do? .green[.emph[Design URIs]]
 
 .blue[Also from the World Wide Web guy in the same article]
+
+--
+
+...and keep the mess around, maybe?
 
 ---
 
@@ -113,8 +126,8 @@ class: middle center
 
 #### Our code
 
-- 😒 Keeping names
-- ✅ Moving old URLs to specific namespace
+- 😒 Keep names
+- ✅ Move old URLs to specific namespace
 
 ]
 
@@ -124,20 +137,12 @@ class: middle center
 
 # ⚙️ Turning 404s into 302s
 
-(massively)
-
 ---
 
-## Fun fact: Redirects
+name: code-warning
+class: middle center
 
-.wide[
-
-|                           | Temporary         | Permanent         |
-| ------------------------- | ----------------- | ----------------- |
-| Method change allowed     | .center[3️⃣ 0️⃣ 2️⃣] | .center[3️⃣ 0️⃣ 1️⃣] |
-| Method change NOT allowed | .center[3️⃣ 0️⃣ 7️⃣] | .center[3️⃣ 0️⃣ 8️⃣] |
-
-]
+![Sign with a warning about code ahead](images/code-ahead.png)
 
 ---
 
@@ -193,7 +198,7 @@ def we_want_to_handle(request):
 
 --
 
-.box[🤔 What to do with `POST` and the others?]
+.box[💡 Did you know there is also .green[307] and .green[308]?]
 
 ---
 
@@ -204,6 +209,8 @@ def we_want_to_handle(request):
 ```python
 def is_old_url(request):
     resolver_match = request.resolver_match
+
+    # We had namespaced all old URLs
     return "old_namespace" in resolver_match.app_names
 ```
 
@@ -217,6 +224,8 @@ def is_old_url(request):
 def find_new_url(request):
     resolver_match = request.resolver_match
 
+    # View comes with all namespaces prefixed
+    # This is why we kept the same name
     view_name = resolver_match.view_name.split(":")[-1]
 
     return reverse(
@@ -261,11 +270,19 @@ class: middle
 
 ---
 
-class: middle center
+## The plan
 
-# ⚙️ Turning 404s into 302s
+--
 
-(with more precision)
+- Big redesign was already done, it was just a matter of ajusting here and there
+
+--
+
+- No need to mount parallel structures again
+
+--
+
+- Can't we just rely on smart path aliasing?
 
 ---
 
@@ -288,14 +305,18 @@ path_with_old(
     "users/<int:pk>/",
     UserDetailUpdateView.as_view(),
     name="user_detail_update",
-*   old=[
-*       "users/<int:pk>/invite/",
-*       "users/<int:pk>/toggle/",
-*       "users/<int:pk>/revoke/",
-*       "users/<int:pk>/delete/",
-*   ],
+    old=[
+        "users/<int:pk>/invite/",
+        "users/<int:pk>/toggle/",
+        "users/<int:pk>/revoke/",
+        "users/<int:pk>/delete/",
+    ],
 )
 ```
+
+---
+
+template: code-warning
 
 ---
 
@@ -366,6 +387,7 @@ class: middle center
 | Email   | [lorinkoz@gmail.com](mailto:lorinkoz@gmail.com)    |
 
 .right[Slides are here 👉]
+.right[.small[(and you should never get a 404 from this link)]]
 ]
 
 .right-column-33[![Slides QR Code](images/slides-qr.png)]
