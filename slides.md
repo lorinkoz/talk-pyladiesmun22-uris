@@ -73,13 +73,21 @@ When you change a URI on your server, you can never completely tell who will hav
 
 class: middle center
 
-## So what should I do? .green[.emph[Design URIs]]
+### So what should we do? .green[.emph[Design URIs]]
 
-.blue[Also from the World Wide Web guy in the same article]
+URIs which we will be able to stand by in 2 years, in 20 years, in 200 years
 
---
+.blue[Also from the World Wide Web guy in the same article].ref[1]
 
-...and keep the mess around, maybe?
+.bottom[.left[
+.footnote[.ref[1] https://www.w3.org/Provider/Style/URI.html.en]
+]]
+
+---
+
+class: middle center
+
+.huge[🫠]
 
 ---
 
