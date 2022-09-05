@@ -179,6 +179,10 @@ table td {
     padding: 0em 0.5em;
 }
 
+.wide table td {
+    padding: 0.5em;
+}
+
 a:link,
 a:active,
 a:visited,

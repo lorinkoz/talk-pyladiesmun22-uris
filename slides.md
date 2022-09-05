@@ -1,9 +1,6 @@
-name: title
 class: middle center
 
-# When 404 becomes 302
-
-PyLadies Munich @ Alasco
+.small[⏳ Loading...]
 
 ---
 
@@ -19,6 +16,15 @@ PyLadies Munich @ Alasco
 
 ]
 .right-column-33[![Myself](images/lorinkoz.png)]
+
+---
+
+name: title
+class: middle center
+
+# When 404 becomes 302
+
+PyLadies Munich @ Alasco
 
 ---
 
@@ -46,9 +52,21 @@ PyLadies Munich @ Alasco
 
 class: middle center
 
-When you change a URI on your server, you can never completely tell who will have links to the old URI [...] They might have bookmarked your page. They might have scrawled the URI in the margin of a letter to a friend.
+When you change a URI .ref[1] on your server, you can never completely tell who will have links to the old URI [...] They might have bookmarked your page. They might have scrawled the URI in the margin of a letter to a friend.
 
 .blue[Tim Berners-Lee &mdash; Cool URIs don't change, 1998]
+
+.bottom[
+.footnote[.ref[1] The difference between URI and URL is out of the scope of this talk]
+]
+
+---
+
+class: middle center
+
+## So what should I do? .green[.emph[Design URIs]]
+
+.blue[Also from the World Wide Web guy in the same article]
 
 ---
 
@@ -56,7 +74,7 @@ When you change a URI on your server, you can never completely tell who will hav
 
 --
 
-- Define .blue[new] URL structure
+- Design .blue[new] URL structure
 
 --
 
@@ -95,8 +113,8 @@ When you change a URI on your server, you can never completely tell who will hav
 
 #### Our code
 
-- 😒 Keep names
-- ✅ Move old URLs to specific namespace
+- 😒 Keeping names
+- ✅ Moving old URLs to specific namespace
 
 ]
 
@@ -106,14 +124,20 @@ class: middle center
 
 # ⚙️ Turning 404s into 302s
 
+(massively)
+
 ---
 
 ## Fun fact: Redirects
+
+.wide[
 
 |                           | Temporary         | Permanent         |
 | ------------------------- | ----------------- | ----------------- |
 | Method change allowed     | .center[3️⃣ 0️⃣ 2️⃣] | .center[3️⃣ 0️⃣ 1️⃣] |
 | Method change NOT allowed | .center[3️⃣ 0️⃣ 7️⃣] | .center[3️⃣ 0️⃣ 8️⃣] |
+
+]
 
 ---
 
@@ -222,9 +246,26 @@ class: middle center
 
 ---
 
+class: middle
+
+.left-column-66[![Multiple railroad tracks](images/tracks2.gif)]
+
+--
+
+.right-column-33[
+
+- Adjusting the wording (e.g. replace "amendment" with "change order")
+- Integrating multiple vanilla Django pages into single page with frontend component.
+
+]
+
+---
+
 class: middle center
 
-![Multiple railroad tracks](images/tracks2.gif)
+# ⚙️ Turning 404s into 302s
+
+(with more precision)
 
 ---
 
@@ -247,12 +288,12 @@ path_with_old(
     "users/<int:pk>/",
     UserDetailUpdateView.as_view(),
     name="user_detail_update",
-    old=[
-        "users/<int:pk>/invite/",
-        "users/<int:pk>/toggle/",
-        "users/<int:pk>/revoke/",
-        "users/<int:pk>/delete/",
-    ],
+*   old=[
+*       "users/<int:pk>/invite/",
+*       "users/<int:pk>/toggle/",
+*       "users/<int:pk>/revoke/",
+*       "users/<int:pk>/delete/",
+*   ],
 )
 ```
 
@@ -298,7 +339,7 @@ def get_redirect_view(name):
 
 class: middle center
 
-#### After that we just had to start enhancing paths
+#### After that we just had to start making changes and enhancing the paths
 
 --
 
@@ -311,6 +352,8 @@ class: middle center
 ---
 
 ## But let's just stop here
+
+--
 
 #### Where to find me?
 
