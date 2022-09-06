@@ -66,7 +66,7 @@ When you change a URI on your server, you can never completely tell who will hav
 
 .bottom[.left[
 .footnote[.ref[1] https://www.w3.org/Provider/Style/URI.html.en]
-.footnote[The difference between URI and URL is out of the scope of this talk]
+.footnote[The difference between URI and URL is out of the scope of this talk, but let's just say that URLs are a subset of URIs]
 ]]
 
 ---
@@ -91,23 +91,28 @@ class: middle center
 
 ---
 
-## The ideal solution
+name: the-plan-1
+layout: true
+
+## The plan
+
+---
 
 --
 
-- Design .blue[new] URL structure
+1. Design .blue[new] URL structure
 
 --
 
-- Mount in tandem with .red[old]
+2. Mount in tandem with .red[old]
 
 --
 
-- Redirect .red[old] to .blue[new]
+3. Redirect .red[old] to .blue[new]
 
 --
 
-- Retire .red[old] URLs (eventually) 🤔
+4. Retire .red[old] URLs (eventually) 🤔
 
 --
 
@@ -115,7 +120,35 @@ class: middle center
 
 ---
 
+template: the-plan-1
+layout: true
+
+|            |                                                              |
+| ---------- | ------------------------------------------------------------ |
+| .red[old]  | `/estimating/cost_element_budgets/project/1/budget_history/` |
+| .blue[new] | `/costs/project/1/budget/history/`                           |
+
+---
+
+--
+
+Phase 1: Design .blue[new]
+
+Phase 2: .red[old] and .blue[new] both respond the same
+
+Phase 3: .red[old] redirects to .blue[new]
+
+Phase 4: .red[old] is removed, only .blue[new] remains
+
+---
+
+layout: false
+
 ## Prerequisites
+
+--
+
+🤓 Because we wanted to solve by code...
 
 --
 
@@ -134,7 +167,7 @@ class: middle center
 
 #### Our code
 
-- 😒 Keep names
+- 😒 Keep names in sync
 - ✅ Move old URLs to specific namespace
 
 ]
@@ -184,6 +217,7 @@ def should_go_to_new(request):
         try:
             return `find_new_url`(request)
         except NoReverseMatch:
+            # Because it's humans keeping things in sync
             logger.warning("🚧")
 
     return None
@@ -199,8 +233,8 @@ def should_go_to_new(request):
 ```python
 def we_want_to_handle(request):
     return (
-        request.method == "GET"
-        and response.status_code not in [301, 302]
+        response.status_code not in [301, 302]
+        and request.method == "GET"  # Wait, why?
     )
 ```
 
@@ -218,7 +252,7 @@ def we_want_to_handle(request):
 def is_old_url(request):
     resolver_match = request.resolver_match
 
-    # We had namespaced all old URLs
+    # Having namespaced the old URLs comes in handy now
     return "old_namespace" in resolver_match.app_names
 ```
 
@@ -232,8 +266,7 @@ def is_old_url(request):
 def find_new_url(request):
     resolver_match = request.resolver_match
 
-    # View comes with all namespaces prefixed
-    # This is why we kept the same name
+    # Ah yes, view comes with all namespaces prefixed
     view_name = resolver_match.view_name.split(":")[-1]
 
     return reverse(
@@ -282,7 +315,7 @@ class: middle
 
 --
 
-- Big redesign was already done, it was just a matter of ajusting here and there
+- Big redesign was already done, it was a matter of ajusting here and there
 
 --
 
@@ -290,7 +323,7 @@ class: middle
 
 --
 
-- Can't we just rely on smart path aliasing?
+#### .right[.green[Can't we just rely on smart path aliasing?]]
 
 ---
 
@@ -328,7 +361,37 @@ template: code-warning
 
 ---
 
+layout: true
+
 ## Here we go again: "path with old"
+
+---
+
+```python
+def path_with_old(route, view, kwargs=None, name=None, `*, old=None`):
+    paths = [path(route, view, kwargs, name)]
+
+    if name and old:
+        # Redirect all "old" to "route" using "name"
+        ...
+
+    return paths[0]
+```
+
+---
+
+```python
+def path_with_old(route, view, kwargs=None, name=None, `*, old=None`):
+    paths = [path(route, view, kwargs, name)]
+
+    if name and old:
+        # Redirect all "old" to "route" using "name"
+        ...
+
+    return path("", include(paths)) if len(paths) > 1 else paths[0]
+```
+
+---
 
 ```python
 def path_with_old(route, view, kwargs=None, name=None, *, old=None):
@@ -351,6 +414,8 @@ def path_with_old(route, view, kwargs=None, name=None, *, old=None):
 
 ---
 
+layout: false
+
 ## A redirect view on-the-fly
 
 ```python
@@ -372,7 +437,7 @@ class: middle center
 
 --
 
-## And we _really_ never had to make any changes in URLs ever again
+## And we never had to make any changes in URLs ever again
 
 --
 
