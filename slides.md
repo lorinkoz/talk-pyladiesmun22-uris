@@ -161,9 +161,9 @@ urlpatterns = [
 |            |                                                              |
 | ---------- | ------------------------------------------------------------ |
 | .red[old]  | `/estimating/cost_element_budgets/project/1/budget_history/` |
+|            | .red[`old_namespace:budget_history`]                         |
 | .blue[new] | `/costs/project/1/budget/history/`                           |
-
----
+|            | .blue[`budget_history`]                                      |
 
 ---
 
@@ -413,8 +413,7 @@ layout: true
 ---
 
 ```python
-def get_redirect_view(name):
-    # Remember that "name" refers to the URL that will prevail
+def get_redirect_view(`name`):
 
     def redirect_view_on_the_fly(request, *args, **kwargs):
         # Actually redirect
@@ -428,7 +427,6 @@ def get_redirect_view(name):
 
 ```python
 def get_redirect_view(name):
-    # Remember that "name" refers to the URL that will prevail
 
     def redirect_view_on_the_fly(request, *args, **kwargs):
         resolver_match = request.resolver_match
