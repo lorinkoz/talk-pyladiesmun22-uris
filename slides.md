@@ -91,12 +91,7 @@ class: middle center
 
 ---
 
-name: the-plan-1
-layout: true
-
 ## The plan
-
----
 
 --
 
@@ -119,30 +114,6 @@ layout: true
 .right-column[![Converging railroad tracks](images/tracks.jpeg)]
 
 ---
-
-template: the-plan-1
-layout: true
-
-|            |                                                              |
-| ---------- | ------------------------------------------------------------ |
-| .red[old]  | `/estimating/cost_element_budgets/project/1/budget_history/` |
-| .blue[new] | `/costs/project/1/budget/history/`                           |
-
----
-
---
-
-Phase 1: Design .blue[new]
-
-Phase 2: .red[old] and .blue[new] both respond the same
-
-Phase 3: .red[old] redirects to .blue[new]
-
-Phase 4: .red[old] is removed, only .blue[new] remains
-
----
-
-layout: false
 
 ## Prerequisites
 
@@ -171,6 +142,28 @@ layout: false
 - ✅ Move old URLs to specific namespace
 
 ]
+
+---
+
+## The two parallel tracks
+
+--
+
+```python
+urlpatterns = [
+    path("", include("path.to.new.urls"),
+    path("", include("path.to.old.urls", namespace="old_namespace")),
+]
+```
+
+--
+
+|            |                                                              |
+| ---------- | ------------------------------------------------------------ |
+| .red[old]  | `/estimating/cost_element_budgets/project/1/budget_history/` |
+| .blue[new] | `/costs/project/1/budget/history/`                           |
+
+---
 
 ---
 
@@ -232,10 +225,7 @@ def should_go_to_new(request):
 
 ```python
 def we_want_to_handle(request):
-    return (
-        response.status_code not in [301, 302]
-        and request.method == "GET"  # Wait, why?
-    )
+    return response.status_code not in [301, 302]
 ```
 
 --
@@ -405,7 +395,7 @@ def path_with_old(route, view, kwargs=None, name=None, *, old=None):
                 old_path,
                 redirect_view,
                 kwargs,
-                f"{name}__{idx}"
+                f"{name}__{idx}"  # hashtag fancy
             )
             paths.append(redirect_path)
 
@@ -414,23 +404,49 @@ def path_with_old(route, view, kwargs=None, name=None, *, old=None):
 
 ---
 
-layout: false
+layout: true
 
 ## A redirect view on-the-fly
 
+---
+
+---
+
 ```python
 def get_redirect_view(name):
+    # Remember that "name" refers to the URL that will prevail
 
     def redirect_view_on_the_fly(request, *args, **kwargs):
-        resolver_match = request.resolver_match
-        full_name = ":".join([*resolver_match.namespaces, name])
-        return redirect(full_name, *args, **kwargs, permanent=True)
+        # Actually redirect
+        ...
+
 
     return redirect_view_on_the_fly
 ```
 
 ---
 
+```python
+def get_redirect_view(name):
+    # Remember that "name" refers to the URL that will prevail
+
+    def redirect_view_on_the_fly(request, *args, **kwargs):
+        resolver_match = request.resolver_match
+        resolved_namespaces = resolver_match.namespaces
+
+        full_name = ":".join([*resolved_namespaces, name])
+        return redirect(full_name, *args, **kwargs, permanent=True)
+
+    return redirect_view_on_the_fly
+```
+
+--
+
+.box[😉 Don't forget query parameters]
+
+---
+
+layout: false
 class: middle center
 
 #### After that we just had to start making changes and enhancing the paths
